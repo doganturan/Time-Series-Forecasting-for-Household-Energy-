@@ -1,0 +1,46 @@
+# Data files
+data/raw/*
+data/processed/*
+
+# Keep folder structure but ignore data files
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model files
+*.pkl
+*.h5
+*.model
+
+# Large files
+*.csv
+*.zip
+*.tar.gz
+
+# But keep any README or documentation
+!README.md
+!**/README.md
