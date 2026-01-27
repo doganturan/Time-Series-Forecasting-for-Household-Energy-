@@ -104,7 +104,9 @@ print("5b. Training Random Forest Regressor...")
 rf_model = RandomForestRegressor(
     n_estimators=200,
     random_state=42,
-    n_jobs=-1
+    min_samples_split=10,
+    min_samples_leaf=5,   
+    max_depth=15
 )
 rf_model.fit(X_train, y_train)
 
@@ -114,6 +116,14 @@ rf_test_pred = rf_model.predict(X_test)
 print("\nRandom Forest Results:")
 rf_train_metrics = calculate_metrics(y_train, rf_train_pred, "Train")
 rf_test_metrics = calculate_metrics(y_test, rf_test_pred, "Test")
+
+# Feature Importance Analysis
+print("\nFeature Importance Analysis:")
+feature_importance = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': rf_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+print(feature_importance.to_string(index=False))
 
 # ============================================================================
 # 7. Model C: Support Vector Regressor (with scaling)
@@ -250,6 +260,33 @@ plt.close(fig2)
 print(f"✓ Saved: residuals_hist.png")
 
 # ============================================================================
+# 12.5 Plot 3: Feature Importance (for Random Forest)
+# ============================================================================
+if best_model_name == 'Random Forest':
+    print("\nPlot 3: Feature Importance...")
+    
+    feature_imp_sorted = feature_importance.sort_values('Importance', ascending=True)
+    
+    fig3, ax3 = plt.subplots(figsize=(10, 8))
+    ax3.barh(feature_imp_sorted['Feature'], feature_imp_sorted['Importance'], 
+             color='#4ECDC4', edgecolor='black', linewidth=1.2)
+    ax3.set_xlabel('Importance Score', fontsize=12)
+    ax3.set_ylabel('Feature', fontsize=12)
+    ax3.set_title('Random Forest: Feature Importance Ranking', fontsize=14, fontweight='bold')
+    ax3.grid(True, alpha=0.3, axis='x')
+    
+    # Add percentage labels
+    for i, (feature, importance) in enumerate(zip(feature_imp_sorted['Feature'], feature_imp_sorted['Importance'])):
+        ax3.text(importance + 0.005, i, f'{importance:.3f}', 
+                va='center', fontsize=9, fontweight='bold')
+    
+    fig3.tight_layout()
+    plot3_path = os.path.join(results_dir, 'feature_importance.png')
+    fig3.savefig(plot3_path, dpi=200)
+    plt.close(fig3)
+    print(f"✓ Saved: feature_importance.png")
+
+# ============================================================================
 # 13. Done
 # ============================================================================
 print("\n" + "=" * 60)
@@ -261,7 +298,9 @@ print(f"  - Models trained: 3 (Linear Regression, Random Forest, SVR)")
 print(f"  - Best model: {best_model_name} (Test RMSE: {best_test_rmse:.4f})")
 print(f"  - Results saved: model_results_day2.csv")
 print(f"  - Predictions saved: test_predictions_best_model.csv")
-print(f"  - Figures created: 2 (pred_vs_actual_line.png, residuals_hist.png)")
+figure_count = 3 if best_model_name == 'Random Forest' else 2
+figure_names = "pred_vs_actual_line.png, residuals_hist.png, feature_importance.png" if best_model_name == 'Random Forest' else "pred_vs_actual_line.png, residuals_hist.png"
+print(f"  - Figures created: {figure_count} ({figure_names})")
 
 
 # ============================================================================

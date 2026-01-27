@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+import seaborn as sns
 import os
 
 # Project root
@@ -32,6 +33,8 @@ data = data[~data.index.duplicated(keep='first')]
 duplicates_removed = original_len - len(data)
 if duplicates_removed > 0:
     print(f"⚠️  Removed {duplicates_removed} duplicate timestamps")
+else :
+    print("✓ No duplicate timestamps found")
 
 print(f"Date range: {data.index.min()} to {data.index.max()}")
 print(f"Total days: {(data.index.max() - data.index.min()).days}")
@@ -93,7 +96,7 @@ print(hourly_missing_counts)
 
 missing_after_resample = hourly_missing_counts.to_dict()
 
-hourly_filled = hourly_data.interpolate(method="time", limit=24)
+hourly_filled = hourly_data.interpolate(method="time")
 hourly_filled = hourly_filled.ffill(limit=3).bfill(limit=3)
 
 missing_after = hourly_filled.isna().sum().sum()
@@ -362,6 +365,20 @@ ax5.set_title('Hourly Distribution of Energy Consumption (0-23h Pattern)', fonts
 plt.suptitle('')
 ax5.set_xticklabels(range(24))
 save_plot(fig5, 'hour_of_day_boxplot.png')
+
+# Correlation heatmap
+print("Creating correlation heatmap...")
+corr_cols = ['Global_active_power', 'Global_reactive_power', 'Voltage', 
+             'Global_intensity', 'Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3']
+corr_matrix = df[corr_cols].corr()
+
+fig6, ax6 = plt.subplots(figsize=(12, 10))
+sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', 
+            center=0, square=True, linewidths=1, cbar_kws={"shrink": 0.8},
+            vmin=-1, vmax=1, ax=ax6)
+ax6.set_title('Correlation Matrix: Energy Consumption Variables', fontsize=14, fontweight='bold')
+plt.tight_layout()
+save_plot(fig6, 'correlation_heatmap.png')
 
 print("\n" + "=" * 60)
 print("✓ All EDA plots created successfully!")

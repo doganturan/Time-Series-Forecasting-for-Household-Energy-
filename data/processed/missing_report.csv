@@ -1,8 +1,8 @@
 Column,Before_Resample,After_Resample,After_Fill
-Global_active_power,25979,421,226
-Global_reactive_power,25979,421,226
-Voltage,25979,421,226
-Global_intensity,25979,421,226
-Sub_metering_1,25979,421,226
-Sub_metering_2,25979,421,226
-Sub_metering_3,25979,421,226
+Global_active_power,25979,421,0
+Global_reactive_power,25979,421,0
+Voltage,25979,421,0
+Global_intensity,25979,421,0
+Sub_metering_1,25979,421,0
+Sub_metering_2,25979,421,0
+Sub_metering_3,25979,421,0
